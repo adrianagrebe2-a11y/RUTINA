@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mi Rutina</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:#0e0e0f; --surface:#161618; --surface2:#1e1e21;
+  --border:#2a2a2e; --border2:#3a3a3f; --text:#f0eff0;
+  --muted:#7a7a82; --dim:#4a4a52;
+  --green:#4ade80; --green-bg:#0d2818;
+  --amber:#fbbf24; --amber-bg:#2a1f00;
+  --coral:#f87171; --coral-bg:#2a0f0f;
+  --purple:#a78bfa; --purple-bg:#1a1030;
+  --teal:#2dd4bf; --teal-bg:#0a2520;
+  --r:10px; --rl:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;overflow-x:hidden}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;padding-bottom:80px;animation:fadeIn .18s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-btn{flex:1;padding:12px 0 10px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim);transition:color .2s;font-family:'DM Sans',sans-serif}
+.nav-btn.active{color:var(--green)}
+.nav-btn svg{width:20px;height:20px}
+.nav-btn span{font-size:10px;font-weight:500;letter-spacing:.02em}
+
+/* HEADERS */
+.page-header{padding:52px 20px 20px;border-bottom:1px solid var(--border)}
+.page-header h1{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.page-header p{font-size:13px;color:var(--muted);margin-top:4px}
+.sess-header{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:12px}
+.back-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;flex-shrink:0;transition:background .15s}
+.back-btn:active{background:var(--surface2)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:10px}
+.card-sm{padding:12px 14px;border-radius:var(--r)}
+.sec-lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 20px;margin:20px 0 8px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+.bg-green{background:var(--green-bg);color:var(--green)}
+.bg-amber{background:var(--amber-bg);color:var(--amber)}
+.bg-coral{background:var(--coral-bg);color:var(--coral)}
+.bg-purple{background:var(--purple-bg);color:var(--purple)}
+.bg-teal{background:var(--teal-bg);color:var(--teal)}
+
+/* BUTTONS */
+.btn{width:100%;padding:14px;border-radius:var(--r);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;transition:all .15s;letter-spacing:-.01em}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--green);color:#000}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.btn-sm{padding:7px 14px;font-size:12px;font-weight:600;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn-sm:active{transform:scale(.96)}
+.btn-green-sm{background:var(--green-bg);color:var(--green)}
+.rest-tag{background:var(--surface2);color:var(--teal);border:1px solid var(--border2);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Mono',monospace;flex-shrink:0;transition:all .15s}
+.rest-tag:active{background:var(--teal-bg);border-color:var(--teal)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.stat-val{font-size:28px;font-weight:600;letter-spacing:-.03em;font-family:'DM Mono',monospace}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+/* WEEK TRACKER */
+.week-track{display:flex;gap:4px;margin-top:10px}
+.wday-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.wday-lbl{font-size:10px;color:var(--dim);font-weight:600;text-align:center}
+.wday-dot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--dim);font-weight:700;transition:all .2s;user-select:none;background:var(--surface2)}
+.wday-dot.is-today{border-color:var(--amber);color:var(--amber)}
+.wday-dot.trained{background:var(--green);border-color:var(--green);color:#000;font-size:14px}
+
+/* WATER */
+.water-grid{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.water-cup{width:36px;height:36px;border-radius:8px;border:1px solid var(--border2);cursor:pointer;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .15s}
+.water-cup.filled{background:var(--teal-bg);border-color:var(--teal)}
+
+/* PILLS */
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;font-size:13px;color:var(--muted);background:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.pill.active{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+
+/* DAY CARDS (session picker) */
+.day-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 20px 4px;scrollbar-width:none}
+.day-scroll::-webkit-scrollbar{display:none}
+.day-card{flex-shrink:0;width:130px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .2s}
+.day-card:active{transform:scale(.97)}
+.day-title{font-size:13px;font-weight:600;margin-top:8px}
+.day-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+/* EXERCISES */
+.ex-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.ex-item:last-child{border:none;padding-bottom:0}
+.ex-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border2);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px;background:none}
+.ex-check.done{background:var(--green);border-color:var(--green)}
+.ex-check.done::after{content:'✓';font-size:12px;color:#000;font-weight:700}
+.ex-info{flex:1;min-width:0}
+.ex-name{font-size:14px;font-weight:500}
+.ex-meta{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.ex-band{font-size:11px;color:var(--teal);font-weight:500;margin-top:3px}
+
+/* PROGRESS BAR */
+.pbar-wrap{background:var(--surface2);border-radius:4px;height:4px;overflow:hidden}
+.pbar{height:4px;background:var(--green);border-radius:4px;transition:width .4s ease}
+
+/* ══ INTEGRATED TIMER ══ */
+.timer-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:10px}
+.timer-ring-wrap{display:flex;justify-content:center;margin-bottom:8px}
+.ring-bg{fill:none;stroke:var(--border2);stroke-width:8}
+.ring-prog{fill:none;stroke:var(--green);stroke-width:8;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .6s ease}
+.timer-num{font-family:'DM Mono',monospace;font-size:52px;font-weight:500;color:var(--text);text-align:center;letter-spacing:-.04em;margin-top:-2px;line-height:1}
+.timer-label{font-size:12px;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:.1em;margin-top:6px}
+.timer-presets{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:14px 0}
+.preset-btn{padding:9px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;text-align:center}
+.preset-btn:active{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.preset-btn.active-preset{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.timer-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* REST OVERLAY */
+.rest-overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;animation:fadeIn .2s}
+.rest-overlay.show{display:flex}
+.rest-count{font-family:'DM Mono',monospace;font-size:86px;font-weight:500;color:var(--green);line-height:1}
+.rest-lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-weight:600}
+.rest-desc{font-size:15px;color:var(--muted);margin-top:16px;text-align:center;padding:0 40px;line-height:1.5}
+
+/* LOG */
+.log-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.log-row:last-child{border:none}
+.log-input{font-family:'DM Mono',monospace;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;width:72px;outline:none;text-align:center;flex-shrink:0}
+.log-input:focus{border-color:var(--green)}
+
+/* NUTRITION */
+.nutri-block{background:var(--surface2);border-radius:var(--r);padding:12px 14px;margin-bottom:8px}
+.nutri-block-title{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.nutri-row{display:flex;align-items:flex-start;gap:10px;padding:5px 0;font-size:13px;color:var(--muted);line-height:1.5}
+.nutri-icon{flex-shrink:0;font-size:15px}
+
+/* INFO ROWS */
+.info-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.info-row:last-child{border:none}
+.info-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;margin-top:1px}
+
+/* PLAN day pills */
+.plan-day-pill{display:inline-flex;flex-direction:column;align-items:center;gap:4px;min-width:38px}
+.plan-day-name{font-size:10px;color:var(--muted)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:14px 0}
+
+/* SCROLL CONTENT */
+.scroll-content{padding:0 20px}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;font-weight:700;font-size:13px;padding:10px 20px;border-radius:20px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- REST OVERLAY (fullscreen, tap Saltear para cerrar) -->
+<div class="rest-overlay" id="restOverlay">
+  <div class="rest-lbl">Descansando</div>
+  <div class="rest-count" id="restCount">60</div>
+  <div class="rest-desc" id="restDesc"></div>
+  <button class="btn btn-secondary" style="width:160px;margin-top:36px" onclick="skipRest()">Saltear</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════ SCREEN: HOME ═══════ -->
+<div class="screen active" id="sc-home">
+  <div class="page-header">
+    <h1>Hola 👋</h1>
+    <p id="home-date"></p>
+  </div>
+  <div style="padding:14px 20px 0">
+
+    <div class="stats-grid" style="margin-bottom:10px">
+      <div class="stat-card">
+        <div class="stat-val" id="qs-sessions">0</div>
+        <div class="stat-lbl">Sesiones</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="qs-streak">0</div>
+        <div class="stat-lbl">Esta semana</div>
+      </div>
+    </div>
+
+    <!-- Week tracker — tap any day to mark as trained -->
+    <div class="card card-sm" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+        <span style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Semana actual</span>
+        <span id="week-trained-lbl" style="font-size:11px;color:var(--dim)">0 días entrenados</span>
+      </div>
+      <div class="week-track" id="week-track"></div>
+      <div style="margin-top:8px;font-size:11px;color:var(--dim)">Tocá el día para marcarlo · la rutina se adapta sola</div>
+    </div>
+
+    <!-- Water + creatine -->
+    <div class="card card-sm" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600">Seguimiento diario</span>
+        <span style="font-size:12px;color:var(--muted)" id="water-count">0 / 8 vasos</span>
+      </div>
+      <div class="water-grid" id="water-grid"></div>
+      <div class="divider" style="margin:10px 0"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:13px;color:var(--muted)">Creatina (5g)</span>
+        <button class="btn-sm btn-green-sm" id="creatine-btn" onclick="toggleCreatine()">Marcar tomada</button>
+      </div>
+    </div>
+
+    <!-- Energy / ciclo -->
+    <div class="card card-sm" style="margin-bottom:10px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:2px">¿Cómo te sentís hoy?</div>
+      <div class="pill-row" id="energy-pills">
+        <button class="pill" onclick="setEnergy('alta',this)">Alta energía</button>
+        <button class="pill" onclick="setEnergy('media',this)">Media</button>
+        <button class="pill" onclick="setEnergy('baja',this)">Baja energía</button>
+        <button class="pill" onclick="setEnergy('mens',this)">Menstruación</button>
+      </div>
+      <div id="energy-advice" style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;display:none"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════ SCREEN: TRAIN (session picker) ═══════ -->
+<div class="screen" id="sc-train">
+  <div class="page-header">
+    <h1>Entrenar</h1>
+    <p id="train-subtitle">Elegí la sesión de hoy</p>
+  </div>
+  <div style="padding:14px 20px 0">
+    <div class="day-scroll" id="day-scroll" style="padding:0;margin-bottom:4px"></div>
+    <p style="font-size:11px;color:var(--dim);margin-top:8px;padding:0 2px">
+      Las sesiones se adaptan automáticamente a los días que marcaste esta semana.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN: SESSION (active workout) ═══════ -->
+<div class="screen" id="sc-session">
+  <div class="sess-header">
+    <button class="back-btn" onclick="goBack()">‹</button>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="sess-name">Sesión</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px" id="sess-meta"></div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--green)" id="elapsed-display">00:00</div>
+      <div style="font-size:10px;color:var(--dim)">transcurrido</div>
+    </div>
+  </div>
+
+  <div style="padding:12px 20px 0">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px">
+      <span style="font-weight:600;letter-spacing:.04em;text-transform:uppercase">Progreso</span>
+      <span id="sess-progress-lbl">0 / 0 ejercicios</span>
+    </div>
+    <div class="pbar-wrap"><div class="pbar" id="sess-progress-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="scroll-content" style="margin-top:16px" id="sess-content"></div>
+
+  <!-- ══ TIMER integrado — siempre visible al final de la sesión ══ -->
+  <div class="scroll-content">
+    <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px">Temporizador de descanso</div>
+    <div class="timer-card">
+      <div class="timer-ring-wrap">
+        <svg width="140" height="140" viewBox="0 0 140 140" style="overflow:visible">
+          <circle class="ring-bg" cx="70" cy="70" r="58"/>
+          <circle class="ring-prog" id="ring-prog" cx="70" cy="70" r="58"
+            stroke-dasharray="364.4" stroke-dashoffset="0"/>
+        </svg>
+      </div>
+      <div class="timer-num" id="timer-num">01:30</div>
+      <div class="timer-label" id="timer-label">Seleccioná un tiempo</div>
+      <div class="timer-presets">
+        <button class="preset-btn" onclick="setTimerPreset(30,this)">30s · accesorios</button>
+        <button class="preset-btn" onclick="setTimerPreset(45,this)">45s · band</button>
+        <button class="preset-btn" onclick="setTimerPreset(60,this)">60s · series</button>
+        <button class="preset-btn active-preset" onclick="setTimerPreset(90,this)">90s · barra</button>
+      </div>
+      <div class="timer-btns">
+        <button class="btn btn-primary" id="timer-start-btn" onclick="timerStartStop()">Iniciar</button>
+        <button class="btn btn-secondary" onclick="timerReset()">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-content" style="padding-bottom:16px">
+    <button class="btn btn-primary" onclick="finishSession()">Finalizar sesión ✓</button>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN: PLAN ═══════ -->
+<div class="screen" id="sc-plan">
+  <div class="page-header">
+    <h1>Mi rutina</h1>
+    <p>Hipertrofia + metabólico · se adapta a tus días</p>
+  </div>
+  <div class="scroll-content">
+
+    <!-- Week structure — dynamic based on trained days -->
+    <div class="sec-lbl" style="padding:0">Sesiones disponibles</div>
+    <div class="card" id="plan-sessions-card" style="margin-bottom:16px"></div>
+
+    <div class="sec-lbl" style="padding:0">Cómo progresar semana a semana</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="info-row"><div class="info-icon">1️⃣</div><div>Si completás todas las reps del rango con RIR ≥ 2 → subís 2.5 kg la semana siguiente.</div></div>
+      <div class="info-row"><div class="info-icon">2️⃣</div><div>Si no podés subir peso → agregás 1 serie antes de intentar subir carga.</div></div>
+      <div class="info-row"><div class="info-icon">3️⃣</div><div>Si el peso quedó liviano pero no tenés más discos → pausa 2s abajo + tempo 3s excéntrico.</div></div>
+      <div class="info-row"><div class="info-icon">🔄</div><div>Deload cada 4–6 semanas: mismos ejercicios al 60% de carga, sin buscar fallo.</div></div>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Mini band — cuándo y por qué</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="info-row"><div class="info-icon">🟢</div><div>Activación pre-entrenamiento — despierta el glúteo medio antes de cargar peso.</div></div>
+      <div class="info-row"><div class="info-icon">🔵</div><div>Glúteo medio lateral — el único músculo que la barra no trabaja en ese vector.</div></div>
+      <div class="info-row"><div class="info-icon">🟡</div><div>Finalizador metabólico — lleva el músculo al límite sin cargar la columna.</div></div>
+      <div class="info-row"><div class="info-icon">🔴</div><div>Retorno venoso — fire hydrant y clam shell reducen retención de líquidos en piernas.</div></div>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Creatina</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="info-row"><div class="info-icon">💊</div><div>5g por día, todos los días (con o sin entrenamiento)</div></div>
+      <div class="info-row"><div class="info-icon">💧</div><div>Con 300–400ml de agua. Si sentís hinchazón, tomala con el desayuno.</div></div>
+      <div class="info-row"><div class="info-icon">⚡</div><div>La hinchazón inicial es agua intramuscular (buena). La retención subcutánea es por hidratación insuficiente.</div></div>
+      <div class="info-row"><div class="info-icon">🎯</div><div>La consistencia importa más que el timing. Siempre a la misma hora.</div></div>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Retención de líquidos</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="info-row"><div class="info-icon">🚶</div><div>8.000–10.000 pasos diarios activan el sistema linfático más que cualquier suplemento.</div></div>
+      <div class="info-row"><div class="info-icon">🧂</div><div>Reducir sodio en ultraprocesados. No eliminar sal en comidas caseras.</div></div>
+      <div class="info-row"><div class="info-icon">🫁</div><div>El finalizador metabólico de cada sesión mejora la circulación local en piernas y glúteos.</div></div>
+      <div class="info-row"><div class="info-icon">🦵</div><div>5 min con piernas en alto contra la pared (viparita karani) mejora el retorno venoso.</div></div>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Descansos recomendados</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="info-row"><div class="info-icon">⏱</div><div><strong>90s</strong> entre series con barra (sentadilla, hip thrust, remo, peso muerto)</div></div>
+      <div class="info-row"><div class="info-icon">⏱</div><div><strong>60s</strong> entre series de ejercicios accesorios (curl, tríceps, press hombros)</div></div>
+      <div class="info-row"><div class="info-icon">⏱</div><div><strong>30–45s</strong> en ejercicios con band y circuitos</div></div>
+      <div class="info-row"><div class="info-icon">⏱</div><div><strong>10s</strong> en Tabata · 0s en AMRAP y circuitos</div></div>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Nutrición base (siempre)</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="info-row"><div class="info-icon">🥩</div><div><strong>Proteína diaria: 104–130g</strong><br><span style="font-size:12px;color:var(--muted)">(1.6–2g × 65 kg) — distribuila en 3–4 comidas</span></div></div>
+      <div class="info-row"><div class="info-icon">😴</div><div><strong>Sin ganas de cocinar:</strong><span style="color:var(--muted)"> huevo duro + queso + fruta. Siempre funciona.</span></div></div>
+      <div class="info-row"><div class="info-icon">🌙</div><div><strong>Antes de dormir:</strong><span style="color:var(--muted)"> caseína o queso cottage. Proteína de liberación lenta para recuperación nocturna.</span></div></div>
+      <div class="info-row"><div class="info-icon">📅</div><div><strong>Los días de descanso</strong><span style="color:var(--muted)"> también necesitan proteína. El músculo se construye fuera del gym.</span></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════ SCREEN: PROGRESS ═══════ -->
+<div class="screen" id="sc-progress">
+  <div class="page-header">
+    <h1>Mi progreso</h1>
+    <p>Registro de cargas y sesiones</p>
+  </div>
+  <div class="scroll-content">
+    <div class="stats-grid" style="margin-bottom:16px">
+      <div class="stat-card"><div class="stat-val" id="prog-sessions">0</div><div class="stat-lbl">Sesiones totales</div></div>
+      <div class="stat-card"><div class="stat-val" id="prog-min">0</div><div class="stat-lbl">Minutos totales</div></div>
+      <div class="stat-card"><div class="stat-val" id="prog-weeks">0</div><div class="stat-lbl">Semanas activas</div></div>
+      <div class="stat-card"><div class="stat-val" id="prog-ex">0</div><div class="stat-lbl">Ejercicios log.</div></div>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Registrá tus cargas</div>
+    <div class="card">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Peso máximo en ejercicios principales esta semana:</div>
+      <div id="weight-log-rows"></div>
+      <button class="btn btn-secondary" style="margin-top:12px" onclick="saveWeights()">Guardar registro</button>
+    </div>
+
+    <div class="sec-lbl" style="padding:0">Historial de sesiones</div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- ═══════ BOTTOM NAV ═══════ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="goScreen('home',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    <span>Inicio</span>
+  </button>
+  <button class="nav-btn" id="nav-train" onclick="goScreen('train',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+    <span>Entrenar</span>
+  </button>
+  <button class="nav-btn" id="nav-plan" onclick="goScreen('plan',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    <span>Rutina</span>
+  </button>
+  <button class="nav-btn" id="nav-progress" onclick="goScreen('progress',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>Progreso</span>
+  </button>
+</nav>
+
+<script>
+/* ════════════════════════════════════
+   DATA
+════════════════════════════════════ */
+const ALL_DAYS = [
+  {
+    id:'lunes', name:'Lunes', focus:'Glúteos + cuádriceps',
+    badge:'Gl', badgeClass:'bg-green', duration:'45–55 min',
+    blocks:[
+      { title:'Activación con band (5 min)',
+        format:'Circuito · 0s descanso entre ejercicios',
+        why:'Activa el glúteo medio antes de cargar peso. Crítico para que el glúteo lidere la sentadilla.',
+        exercises:[
+          {name:'Clamshell con band',sets:'2×15 c/lado',rest:0,band:true,notes:'Band en muslos. Caderas apiladas.'},
+          {name:'Patada lateral (fire hydrant)',sets:'2×12 c/lado',rest:0,band:true,notes:'En cuadrupedia. Rodilla a 90°.'},
+          {name:'Glute bridge con band',sets:'2×15',rest:30,band:true,notes:'Band sobre rodillas. Apretá glúteo arriba.'},
+        ]},
+      { title:'Bloque principal (25 min)',
+        format:'Series tradicionales · 90s descanso entre series',
+        why:'Máxima carga para hipertrofia. Requiere descanso completo para rendir.',
+        exercises:[
+          {name:'Sentadilla con barra',sets:'4×6–8 · RIR 1–2',rest:90,band:false,notes:'Bajá lento (3s), explosiva arriba. Esta es tu marca.'},
+          {name:'Hip thrust con barra',sets:'4×10–12 · RIR 0–1',rest:90,band:false,notes:'Apoyá espalda alta en sillón. Band opcional.'},
+          {name:'Zancadas hacia atrás con barra',sets:'3×10 c/pierna',rest:60,band:false,notes:'Espalda alta. Rodilla trasera casi al piso.'},
+        ]},
+      { title:'Finalizador metabólico (8 min)',
+        format:'AMRAP 8 min · sin descanso fijo',
+        why:'Trabajo metabólico, mejora circulación, reduce retención en piernas.',
+        exercises:[
+          {name:'Sentadilla sumo con mancuernas',sets:'12 reps',rest:0,band:false,notes:''},
+          {name:'Patada trasera con band en cuadrupedia',sets:'10 reps c/lado',rest:0,band:true,notes:''},
+          {name:'Glute bridge con band',sets:'15 reps',rest:30,band:true,notes:'30s descanso al completar la ronda'},
+        ]}
+    ],
+    nutri:{
+      pre:[
+        {icon:'🌅',text:'<strong>Mañana:</strong> Banana + café, o avena rápida 30 min antes.'},
+        {icon:'🌆',text:'<strong>Tarde/noche:</strong> Fruta + yogur, o tostada con palta.'},
+      ],
+      post:[
+        {icon:'✅',text:'<strong>Post urgente (primeros 30 min):</strong> 20–30g proteína. Huevos, yogur griego o proteína en polvo.'},
+        {icon:'🥩',text:'<strong>Comida principal:</strong> Pollo o carne + papa o arroz + vegetales. Es la sesión más intensa: más carbos hoy.'},
+      ]
+    }
+  },
+  {
+    id:'martes', name:'Martes', focus:'Tren superior equilibrado',
+    badge:'Sup', badgeClass:'bg-purple', duration:'40–50 min',
+    blocks:[
+      { title:'Calentamiento (5 min)',
+        format:'Movilidad · sin descanso',
+        why:'Activa cadena posterior y hombros sin sobrecargar trapecios.',
+        exercises:[
+          {name:'Círculos de hombros + retracción escapular',sets:'2×10',rest:0,band:false,notes:'Lento y controlado.'},
+          {name:'Dislocaciones con band',sets:'2×10',rest:20,band:true,notes:'Band abierta, brazos extendidos.'},
+        ]},
+      { title:'Superseries espalda + pecho (20 min)',
+        format:'Superseries · 60s descanso entre pares',
+        why:'Músculos opuestos. Más eficiencia, mejor postura, mismo resultado.',
+        exercises:[
+          {name:'Remo con barra (espalda)',sets:'4×8–10',rest:0,band:false,notes:'PRIORIDAD. Codos pegados. Apretá romboides arriba.'},
+          {name:'Floor press con barra (pecho)',sets:'4×10–12',rest:60,band:false,notes:'En el piso, codos a 45°. Reemplaza el press en banco.'},
+          {name:'Remo unilateral con mancuerna',sets:'3×12 c/brazo',rest:0,band:false,notes:'Espalda paralela al piso.'},
+          {name:'Raise posterior con band',sets:'3×15',rest:45,band:true,notes:'Abrís hacia atrás. Equilibra deltoides posterior.'},
+        ]},
+      { title:'Brazos + core (15 min)',
+        format:'Circuito · 30s descanso entre ejercicios',
+        why:'Brazos eficientes. El core evita desequilibrios.',
+        exercises:[
+          {name:'Curl bíceps con barra (tempo lento)',sets:'3×10–12',rest:30,band:false,notes:'Bajada en 3s.'},
+          {name:'Press francés con barra (tríceps)',sets:'3×12',rest:30,band:false,notes:'Codos fijos.'},
+          {name:'Plancha con band en muñecas',sets:'3×30s',rest:30,band:true,notes:'Band agrega inestabilidad. Core activado.'},
+        ]}
+    ],
+    nutri:{
+      pre:[
+        {icon:'🌅',text:'<strong>Pre:</strong> Tostada con mantequilla de maní + banana, o yogur con granola.'},
+      ],
+      post:[
+        {icon:'✅',text:'<strong>Post:</strong> Yogur griego + fruta, o batido de proteína.'},
+        {icon:'🐟',text:'<strong>Comida:</strong> Salmón o atún (omega-3 antiinflamatorio) + arroz integral + ensalada verde.'},
+      ]
+    }
+  },
+  {
+    id:'jueves', name:'Jueves', focus:'Full body + metabólico',
+    badge:'Full', badgeClass:'bg-amber', duration:'40–50 min',
+    blocks:[
+      { title:'Core activado (8 min)',
+        format:'EMOM 8 minutos',
+        why:'EMOM obliga a respetar los tiempos.',
+        exercises:[
+          {name:'Min 1: Dead bug',sets:'10 reps',rest:0,band:false,notes:'Espalda pegada al piso.'},
+          {name:'Min 2: Hollow hold',sets:'30 segundos',rest:0,band:false,notes:''},
+          {name:'Min 3: Mountain climbers',sets:'20 reps',rest:0,band:false,notes:''},
+          {name:'Min 4: Plancha lateral',sets:'20s c/lado',rest:0,band:false,notes:''},
+          {name:'Repetir 2 veces (min 5–8)',sets:'',rest:0,band:false,notes:''},
+        ]},
+      { title:'Full body compuesto (25 min)',
+        format:'Series tradicionales · RIR 2–3',
+        why:'Segundo estímulo semanal. Intensidad moderada para recuperarse bien.',
+        exercises:[
+          {name:'Peso muerto convencional con barra',sets:'3×8',rest:90,band:false,notes:'Foco en cadena posterior. Espalda neutral.'},
+          {name:'Press de hombros con barra (sentada)',sets:'3×10',rest:60,band:false,notes:'Sentada = menos trapecio. Importante.'},
+          {name:'Curl bíceps con mancuernas alternado',sets:'3×12',rest:45,band:false,notes:''},
+          {name:'Extensión de tríceps con mancuerna',sets:'3×12',rest:45,band:false,notes:''},
+        ]},
+      { title:'Finalizador circulatorio (7 min)',
+        format:'Tabata 20s ON / 10s OFF',
+        why:'Mejora circulación y reduce retención.',
+        exercises:[
+          {name:'Sentadilla con band (sin peso)',sets:'20s ON / 10s OFF',rest:10,band:true,notes:''},
+          {name:'Patada lateral con band de pie',sets:'20s ON / 10s OFF c/lado',rest:10,band:true,notes:''},
+          {name:'Glute bridge con band',sets:'20s ON / 10s OFF',rest:10,band:true,notes:''},
+        ]}
+    ],
+    nutri:{
+      pre:[
+        {icon:'⚡',text:'<strong>Pre:</strong> Carbos rápidos 30–45 min antes. Banana, tostada, arroz.'},
+        {icon:'💧',text:'<strong>Hidratación:</strong> Arrancá con 500ml ya tomados. Full body = más sudor.'},
+      ],
+      post:[
+        {icon:'✅',text:'<strong>Post:</strong> Proteína + carbos juntos. Huevos con pan, o batido con avena.'},
+        {icon:'🔥',text:'<strong>No salteés la comida post:</strong> sesión metabólica = glucógeno depletado. El cuerpo lo necesita.'},
+      ]
+    }
+  },
+  {
+    id:'sabado', name:'Sábado', focus:'Glúteo medio/lateral + posterior',
+    badge:'Gl+', badgeClass:'bg-teal', duration:'45–55 min',
+    blocks:[
+      { title:'Activación glúteo medio (6 min)',
+        format:'Circuito con band · sin descanso',
+        why:'El glúteo medio es el objetivo principal. Pre-activarlo es clave.',
+        exercises:[
+          {name:'Clamshell con band',sets:'3×15 c/lado',rest:0,band:true,notes:'Más reps que el lunes.'},
+          {name:'Monster walk lateral con band',sets:'3×10 pasos c/lado',rest:15,band:true,notes:'Band en tobillos. Rodillas flexionadas.'},
+          {name:'Squat con band (apertura rodillas)',sets:'2×15',rest:20,band:true,notes:'Empujá rodillas contra la band.'},
+        ]},
+      { title:'Glúteo posterior + medio (25 min)',
+        format:'Series tradicionales · 90s descanso',
+        why:'Hip thrust es el #1 para glúteo mayor. Abducción aísla el glúteo medio.',
+        exercises:[
+          {name:'Hip thrust con barra',sets:'4×10–12 · RIR 0',rest:90,band:false,notes:'MÁXIMA prioridad. Cargá más que el lunes si podés.'},
+          {name:'Peso muerto rumano con barra',sets:'3×10–12',rest:90,band:false,notes:'Caderas atrás. Tirón en la parte posterior del muslo.'},
+          {name:'Abducción de cadera lateral con band (de pie)',sets:'4×15 c/lado',rest:45,band:true,notes:'Band en tobillos. GLÚTEO MEDIO.'},
+          {name:'Zancada lateral con band',sets:'3×10 c/lado',rest:45,band:true,notes:'Band en muslos. Paso amplio a los lados.'},
+        ]},
+      { title:'Finalizador quema glúteo (6 min)',
+        format:'AMRAP 6 min',
+        why:'Glúteo saturado de sangre. Mejora circulación y define.',
+        exercises:[
+          {name:'Patada trasera con band en cuadrupedia',sets:'15 reps c/lado',rest:0,band:true,notes:''},
+          {name:'Fire hydrant con band',sets:'12 reps c/lado',rest:0,band:true,notes:''},
+          {name:'Puente de glúteo con band (pies juntos)',sets:'20 reps',rest:20,band:true,notes:''},
+        ]}
+    ],
+    nutri:{
+      pre:[
+        {icon:'🌅',text:'<strong>Pre:</strong> Algo liviano está bien. Esta sesión es más técnica que metabólica.'},
+      ],
+      post:[
+        {icon:'✅',text:'<strong>Post:</strong> Proteína normal. Huevos, yogur o carne magra.'},
+        {icon:'💊',text:'<strong>Creatina:</strong> Recordá los 5g hoy también aunque es sábado (todos los días sin excepción).'},
+      ]
+    }
+  },
+  {
+    id:'extra', name:'Día extra', focus:'Movilidad + recuperación activa',
+    badge:'Mov', badgeClass:'bg-coral', duration:'30–40 min',
+    blocks:[
+      { title:'Movilidad de cadera',
+        format:'Flujo continuo · sin descanso',
+        why:'Fase folicular/ovulación: energía alta. Buen día para estímulo extra suave.',
+        exercises:[
+          {name:'90/90 stretch',sets:'2 min c/lado',rest:0,band:false,notes:'Soltá la cadera completamente.'},
+          {name:'Hip flexor stretch (estocada profunda)',sets:'90s c/lado',rest:0,band:false,notes:''},
+          {name:'Frog stretch',sets:'2 min',rest:0,band:false,notes:'Rodillas a 90°, empujá caderas atrás.'},
+          {name:'Cat-cow',sets:'2×10 respiraciones',rest:0,band:false,notes:''},
+        ]},
+      { title:'Activación suave con band',
+        format:'1 serie · sin llegar al fallo',
+        why:'Mantiene el estímulo sin acumular fatiga.',
+        exercises:[
+          {name:'Clamshell suave con band',sets:'1×12 c/lado',rest:0,band:true,notes:'Sin llegar al límite.'},
+          {name:'Glute bridge ligero con band',sets:'1×15',rest:0,band:true,notes:''},
+          {name:'Monster walk lento',sets:'1×8 pasos c/lado',rest:0,band:true,notes:''},
+        ]}
+    ],
+    nutri:{
+      pre:[
+        {icon:'🌿',text:'<strong>Hoy es día suave.</strong> Comé normal, sin presión extra de proteína.'},
+      ],
+      post:[
+        {icon:'🐟',text:'<strong>Anti-inflamatorio:</strong> Frutas, verduras, omega-3 (nueces, salmón, chía).'},
+        {icon:'💧',text:'<strong>Hidratación:</strong> Al menos 2L hoy. Acelera la recuperación muscular.'},
+      ]
+    }
+  }
+];
+
+// Rutina adaptada: cuántos días marcados → qué sesiones mostrar
+// 1 = Lunes, 2 = Lunes+Jueves, 3 = Lunes+Martes+Jueves, 4 = todos menos extra, 5+ = todos
+function getSessionsForCount(n){
+  if(n<=0) return ALL_DAYS; // mostrar todo si no marcó nada todavía
+  if(n===1) return [ALL_DAYS[0]];
+  if(n===2) return [ALL_DAYS[0],ALL_DAYS[2]];
+  if(n===3) return [ALL_DAYS[0],ALL_DAYS[1],ALL_DAYS[2]];
+  if(n===4) return [ALL_DAYS[0],ALL_DAYS[1],ALL_DAYS[2],ALL_DAYS[3]];
+  return ALL_DAYS; // 5+
+}
+
+const MAIN_EXERCISES = [
+  'Sentadilla con barra','Hip thrust con barra','Remo con barra (espalda)',
+  'Peso muerto convencional con barra','Peso muerto rumano con barra',
+  'Press de hombros con barra (sentada)'
+];
+
+const ENERGY_ADVICE = {
+  alta:'🟢 Fase folicular / ovulación. Semana ideal para superar marcas en sentadilla e hip thrust. Podés agregar el día extra si tenés energía.',
+  media:'🟡 Energía normal. Seguí la rutina como está. RIR 1–2 en ejercicios principales.',
+  baja:'🟠 Fase lútea. Bajá el peso un 15–20%. Los ejercicios con band son ideales hoy.',
+  mens:'🔴 Primeros días. Movilidad y band work suave es más que suficiente. Descansá sin culpa.'
+};
+
+/* ════════════════════════════════════
+   STATE
+════════════════════════════════════ */
+let appData = {
+  sessions:[], water:0, creatine:false, energy:null,
+  weights:{}, lastWaterDate:'', trainedDays:{}
+};
+
+let elapsedInterval=null, restInterval=null, restRemaining=0, restTotalSecs=60;
+let sessStartTime=null, currentScreen='home', sessionChecked={};
+
+// Timer state
+let timerSecs=90, timerLeft=90, timerRunning=false, timerInterval=null;
+
+/* ════════════════════════════════════
+   PERSISTENCE
+════════════════════════════════════ */
+function loadData(){
+  try{
+    const s=localStorage.getItem('adri_v3');
+    if(s) appData={...appData,...JSON.parse(s)};
+    const today=todayStr();
+    if(appData.lastWaterDate!==today){
+      appData.water=0; appData.creatine=false; appData.lastWaterDate=today;
+    }
+    if(!appData.trainedDays) appData.trainedDays={};
+  }catch(e){}
+}
+function saveData(){ try{localStorage.setItem('adri_v3',JSON.stringify(appData));}catch(e){} }
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+
+function weekMonday(){
+  const n=new Date(), dow=n.getDay();
+  const m=new Date(n); m.setDate(n.getDate()-(dow===0?6:dow-1)); m.setHours(0,0,0,0);
+  return m;
+}
+function weekDates(){
+  const mon=weekMonday(), arr=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(mon); d.setDate(mon.getDate()+i);
+    arr.push(d.toISOString().split('T')[0]);
+  }
+  return arr;
+}
+function trainedThisWeek(){
+  return weekDates().filter(d=>appData.trainedDays[d]).length;
+}
+
+/* ════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════ */
+function goScreen(id, btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sc-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else {
+    const map={home:'nav-home',train:'nav-train',session:'nav-train',plan:'nav-plan',progress:'nav-progress'};
+    if(map[id]) document.getElementById(map[id]).classList.add('active');
+  }
+  currentScreen=id;
+  if(id==='progress') renderProgress();
+  if(id==='home') renderHome();
+  if(id==='train') renderTrainPicker();
+  if(id==='plan') renderPlan();
+}
+
+function goBack(){
+  if(elapsedInterval){clearInterval(elapsedInterval);elapsedInterval=null;}
+  goScreen('home', document.getElementById('nav-home'));
+}
+
+/* ════════════════════════════════════
+   HOME
+════════════════════════════════════ */
+function renderHome(){
+  const days=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const now=new Date();
+  document.getElementById('home-date').textContent=
+    days[now.getDay()]+', '+now.toLocaleDateString('es-AR',{day:'numeric',month:'long'});
+
+  const trained=trainedThisWeek();
+  document.getElementById('qs-sessions').textContent=appData.sessions.length;
+  document.getElementById('qs-streak').textContent=trained;
+  document.getElementById('week-trained-lbl').textContent=trained+' día'+(trained===1?'':'s')+' entrenado'+(trained===1?'':'s');
+
+  // Week tracker
+  const wt=document.getElementById('week-track'); wt.innerHTML='';
+  const lbls=['L','M','X','J','V','S','D'];
+  const todayS=todayStr();
+  weekDates().forEach((d,i)=>{
+    const col=document.createElement('div'); col.className='wday-col';
+    const lbl=document.createElement('div'); lbl.className='wday-lbl'; lbl.textContent=lbls[i];
+    const dot=document.createElement('div');
+    let cls='wday-dot';
+    if(d===todayS) cls+=' is-today';
+    if(appData.trainedDays[d]) cls+=' trained';
+    dot.className=cls;
+    dot.textContent=appData.trainedDays[d]?'✓':(d===todayS?'·':'');
+    dot.setAttribute('aria-label',(appData.trainedDays[d]?'Entrenado':'No entrenado')+' — '+d);
+    dot.onclick=(function(date){ return function(){
+      appData.trainedDays[date]=!appData.trainedDays[date];
+      saveData(); renderHome();
+      // also refresh train picker if visible
+      if(currentScreen==='train') renderTrainPicker();
+    }; })(d);
+    col.appendChild(lbl); col.appendChild(dot);
+    wt.appendChild(col);
+  });
+
+  renderWater(); renderCreatine();
+
+  // Restore energy
+  if(appData.energy){
+    document.querySelectorAll('#energy-pills .pill').forEach(p=>{
+      p.classList.toggle('active', p.getAttribute('onclick')?.includes("'"+appData.energy+"'"));
+    });
+    const adv=document.getElementById('energy-advice');
+    adv.textContent=ENERGY_ADVICE[appData.energy];
+    adv.style.display='block';
+  }
+}
+
+function renderWater(){
+  const wg=document.getElementById('water-grid'); wg.innerHTML='';
+  document.getElementById('water-count').textContent=appData.water+' / 8 vasos';
+  for(let i=0;i<8;i++){
+    const c=document.createElement('div');
+    c.className='water-cup'+(i<appData.water?' filled':'');
+    c.textContent='💧';
+    c.onclick=()=>{appData.water=i<appData.water?i:i+1;saveData();renderWater();};
+    wg.appendChild(c);
+  }
+}
+
+function renderCreatine(){
+  const btn=document.getElementById('creatine-btn');
+  if(appData.creatine){btn.textContent='✓ Tomada';btn.style.color='var(--green)';}
+  else{btn.textContent='Marcar tomada';btn.style.color='';}
+}
+
+function toggleCreatine(){
+  appData.creatine=!appData.creatine; saveData(); renderCreatine();
+  showToast(appData.creatine?'✓ Creatina registrada':'Creatina desmarcada');
+}
+
+function setEnergy(val,el){
+  document.querySelectorAll('#energy-pills .pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  appData.energy=val;
+  const adv=document.getElementById('energy-advice');
+  adv.textContent=ENERGY_ADVICE[val]; adv.style.display='block';
+  saveData();
+}
+
+/* ════════════════════════════════════
+   TRAIN PICKER
+════════════════════════════════════ */
+function renderTrainPicker(){
+  const trained=trainedThisWeek();
+  const sessions=getSessionsForCount(trained);
+  document.getElementById('train-subtitle').textContent=
+    trained>0
+      ? trained+' día'+(trained===1?'':'s')+' marcado'+(trained===1?'':'s')+' esta semana · '+sessions.length+' sesiones'
+      : 'Marcá días en Inicio para adaptar la rutina';
+
+  const ds=document.getElementById('day-scroll'); ds.innerHTML='';
+  sessions.forEach(day=>{
+    const dc=document.createElement('div'); dc.className='day-card';
+    dc.innerHTML=`
+      <span class="badge ${day.badgeClass}">${day.badge}</span>
+      <div class="day-title">${day.name}</div>
+      <div class="day-sub">${day.focus}</div>
+      <div class="day-sub" style="margin-top:6px;color:var(--green)">${day.duration}</div>`;
+    dc.onclick=()=>startSession(day);
+    ds.appendChild(dc);
+  });
+}
+
+/* ════════════════════════════════════
+   SESSION
+════════════════════════════════════ */
+function startSession(day){
+  sessionChecked={};
+  document.getElementById('sess-name').textContent=day.name+' — '+day.focus;
+  document.getElementById('sess-meta').textContent=day.duration+' · '+day.blocks.length+' bloques';
+
+  sessStartTime=Date.now();
+  if(elapsedInterval) clearInterval(elapsedInterval);
+  elapsedInterval=setInterval(()=>{
+    const e=Math.floor((Date.now()-sessStartTime)/1000);
+    const m=Math.floor(e/60),s=e%60;
+    document.getElementById('elapsed-display').textContent=
+      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  },1000);
+
+  const cont=document.getElementById('sess-content'); cont.innerHTML='';
+  let totalEx=0;
+
+  day.blocks.forEach((block,bi)=>{
+    const bd=document.createElement('div'); bd.style.cssText='margin-bottom:20px';
+    bd.innerHTML=`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">${block.title}</div>
+      </div>
+      <div class="card card-sm" style="margin-bottom:6px;background:var(--surface2);border-color:var(--border)">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:600;letter-spacing:.05em;text-transform:uppercase">Formato</div>
+        <div style="font-size:12px;color:var(--amber)">${block.format}</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:3px;line-height:1.4">${block.why}</div>
+      </div>`;
+
+    const exCard=document.createElement('div'); exCard.className='card'; exCard.style.cssText='padding:4px 14px';
+    block.exercises.forEach((ex,ei)=>{
+      const key=`${bi}-${ei}`; totalEx++;
+      const exDiv=document.createElement('div'); exDiv.className='ex-item'; exDiv.id='ex-'+key;
+      const nameEnc=encodeURIComponent(ex.name);
+      exDiv.innerHTML=`
+        <button class="ex-check" id="chk-${key}" onclick="checkEx('${key}','${ex.rest}','${nameEnc}')"></button>
+        <div class="ex-info">
+          <div class="ex-name">${ex.name}</div>
+          ${ex.sets?`<div class="ex-meta">${ex.sets}${ex.rest>0?' · '+ex.rest+'s descanso':''}</div>`:''}
+          ${ex.notes?`<div class="ex-meta" style="color:var(--dim)">${ex.notes}</div>`:''}
+          ${ex.band?'<div class="ex-band">🟢 Usar mini band</div>':''}
+        </div>
+        ${ex.rest>0?`<button class="rest-tag" onclick="quickRest(${ex.rest},'${nameEnc}')">${ex.rest}s</button>`:''}`;
+      exCard.appendChild(exDiv);
+    });
+    bd.appendChild(exCard);
+    cont.appendChild(bd);
+  });
+
+  // Weight log
+  const mainInDay=day.blocks.flatMap(b=>b.exercises).filter(e=>MAIN_EXERCISES.includes(e.name));
+  if(mainInDay.length){
+    const logDiv=document.createElement('div');
+    logDiv.innerHTML='<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Registrá las cargas</div>';
+    const lc=document.createElement('div'); lc.className='card';
+    mainInDay.forEach(ex=>{
+      const row=document.createElement('div'); row.className='log-row';
+      const prev=appData.weights[ex.name]||'';
+      row.innerHTML=`
+        <div style="flex:1;font-size:13px">${ex.name.split(' ').slice(0,3).join(' ')}</div>
+        <input class="log-input" type="number" id="log-${ex.name}"
+          placeholder="${prev||'kg'}" value="${prev}" step="0.5" min="0">`;
+      lc.appendChild(row);
+    });
+    logDiv.appendChild(lc);
+    cont.appendChild(logDiv);
+    window._sessMainEx=mainInDay;
+  } else { window._sessMainEx=[]; }
+
+  // Nutrition inline
+  if(day.nutri){
+    const nd=document.createElement('div');
+    nd.style.cssText='margin-top:6px';
+    let html='<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px">🥗 Nutrición para hoy</div>';
+    if(day.nutri.pre?.length){
+      html+='<div class="nutri-block"><div class="nutri-block-title">Antes del entreno</div>';
+      day.nutri.pre.forEach(r=>{html+=`<div class="nutri-row"><span class="nutri-icon">${r.icon}</span><span>${r.text}</span></div>`;});
+      html+='</div>';
+    }
+    if(day.nutri.post?.length){
+      html+='<div class="nutri-block"><div class="nutri-block-title">Después del entreno</div>';
+      day.nutri.post.forEach(r=>{html+=`<div class="nutri-row"><span class="nutri-icon">${r.icon}</span><span>${r.text}</span></div>`;});
+      html+='</div>';
+    }
+    nd.innerHTML=html;
+    cont.appendChild(nd);
+  }
+
+  window._sessTotalEx=totalEx; window._sessDay=day;
+  updateSessProgress();
+
+  // Mark today trained
+  appData.trainedDays[todayStr()]=true; saveData();
+
+  // Reset timer
+  setTimerPreset(90, document.querySelector('.preset-btn.active-preset'));
+
+  goScreen('session',null);
+  document.getElementById('sc-session').scrollTop=0;
+}
+
+function checkEx(key,rest,nameEnc){
+  sessionChecked[key]=!sessionChecked[key];
+  const chk=document.getElementById('chk-'+key);
+  if(sessionChecked[key]) chk.classList.add('done'); else chk.classList.remove('done');
+  updateSessProgress();
+  const rs=parseInt(rest);
+  if(sessionChecked[key]&&rs>0) quickRest(rs,nameEnc);
+}
+
+function updateSessProgress(){
+  const done=Object.values(sessionChecked).filter(Boolean).length;
+  const total=window._sessTotalEx||1;
+  document.getElementById('sess-progress-bar').style.width=Math.round(done/total*100)+'%';
+  document.getElementById('sess-progress-lbl').textContent=done+' / '+total+' ejercicios';
+}
+
+/* quickRest: sets the integrated timer to the given seconds AND shows overlay */
+function quickRest(secs,nameEnc){
+  const name=decodeURIComponent(nameEnc);
+  // Set & start integrated timer
+  setTimerPreset(secs, null);
+  timerStartStop(); // start it
+  // Show overlay
+  restRemaining=secs; restTotalSecs=secs;
+  document.getElementById('restCount').textContent=secs;
+  document.getElementById('restDesc').textContent='Próximo: '+name;
+  document.getElementById('restOverlay').classList.add('show');
+  if(restInterval) clearInterval(restInterval);
+  restInterval=setInterval(()=>{
+    restRemaining--;
+    document.getElementById('restCount').textContent=restRemaining;
+    if(restRemaining<=0){clearInterval(restInterval);skipRest();}
+  },1000);
+}
+
+function skipRest(){
+  clearInterval(restInterval);
+  document.getElementById('restOverlay').classList.remove('show');
+  // Also stop integrated timer
+  timerRunning=false; clearInterval(timerInterval);
+  document.getElementById('timer-start-btn').textContent='Iniciar';
+}
+
+function finishSession(){
+  const dur=Math.round((Date.now()-sessStartTime)/60000);
+  const weights={};
+  (window._sessMainEx||[]).forEach(ex=>{
+    const v=document.getElementById('log-'+ex.name)?.value;
+    if(v){weights[ex.name]=parseFloat(v);appData.weights[ex.name]=parseFloat(v);}
+  });
+  appData.sessions.unshift({date:todayStr(),day:window._sessDay?.name||'',focus:window._sessDay?.focus||'',dur,weights});
+  appData.trainedDays[todayStr()]=true;
+  saveData();
+  if(elapsedInterval){clearInterval(elapsedInterval);elapsedInterval=null;}
+  timerRunning=false; clearInterval(timerInterval);
+  showToast('¡Sesión guardada! +'+dur+' min 💪');
+  setTimeout(()=>goScreen('home',document.getElementById('nav-home')),800);
+}
+
+/* ════════════════════════════════════
+   INTEGRATED TIMER
+════════════════════════════════════ */
+const CIRC=364.4; // 2πr = 2π×58
+
+function setTimerPreset(secs, btn){
+  // clear previous active
+  if(btn){
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active-preset'));
+    btn.classList.add('active-preset');
+  }
+  // if running, stop
+  timerRunning=false; clearInterval(timerInterval);
+  document.getElementById('timer-start-btn').textContent='Iniciar';
+  timerSecs=secs; timerLeft=secs;
+  updateTimerUI();
+}
+
+function timerStartStop(){
+  if(timerRunning){
+    timerRunning=false; clearInterval(timerInterval);
+    document.getElementById('timer-start-btn').textContent='Continuar';
+  } else {
+    if(timerLeft<=0){timerLeft=timerSecs;}
+    timerRunning=true;
+    document.getElementById('timer-start-btn').textContent='Pausar';
+    timerInterval=setInterval(()=>{
+      timerLeft--;
+      updateTimerUI();
+      if(timerLeft<=0){
+        clearInterval(timerInterval); timerRunning=false;
+        document.getElementById('timer-start-btn').textContent='Iniciar';
+        document.getElementById('timer-label').textContent='¡Listo! ✓';
+      }
+    },1000);
+  }
+}
+
+function timerReset(){
+  timerRunning=false; clearInterval(timerInterval);
+  timerLeft=timerSecs;
+  document.getElementById('timer-start-btn').textContent='Iniciar';
+  updateTimerUI();
+}
+
+function updateTimerUI(){
+  const m=Math.floor(timerLeft/60),s=timerLeft%60;
+  document.getElementById('timer-num').textContent=
+    String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const offset=CIRC*(1-timerLeft/timerSecs);
+  document.getElementById('ring-prog').style.strokeDashoffset=Math.max(0,offset);
+  if(timerLeft>0){
+    const lbls={30:'Accesorios · 30s',45:'Band · 45s',60:'Series · 60s',90:'Barra · 90s'};
+    document.getElementById('timer-label').textContent=lbls[timerSecs]||'Descanso';
+  }
+}
+
+/* ════════════════════════════════════
+   PLAN
+════════════════════════════════════ */
+function renderPlan(){
+  const trained=trainedThisWeek();
+  const sessions=getSessionsForCount(trained);
+  const card=document.getElementById('plan-sessions-card'); card.innerHTML='';
+
+  sessions.forEach(day=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)';
+    row.innerHTML=`
+      <span class="badge ${day.badgeClass}" style="min-width:42px;justify-content:center">${day.badge}</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${day.name}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${day.focus} · ${day.duration}</div>
+      </div>`;
+    card.appendChild(row);
+  });
+  if(sessions.length===ALL_DAYS.length){
+    // add separator note
+    const note=document.createElement('div');
+    note.style.cssText='font-size:11px;color:var(--dim);padding-top:10px;text-align:center';
+    note.textContent='5 días · incluye sesión de recuperación activa';
+    card.appendChild(note);
+  } else {
+    // Remove border from last row
+    if(card.lastElementChild?.tagName==='DIV'){
+      card.lastElementChild.style.borderBottom='none';
+    }
+  }
+  if(!card.childElementCount){
+    card.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px 0">Marcá días en Inicio para ver tu plan.</div>';
+  }
+}
+
+/* ════════════════════════════════════
+   PROGRESS
+════════════════════════════════════ */
+function renderProgress(){
+  const n=appData.sessions.length;
+  const totalMin=appData.sessions.reduce((a,s)=>a+(s.dur||0),0);
+  const totalEx=appData.sessions.reduce((a,s)=>a+Object.keys(s.weights||{}).length,0);
+  const weeks=new Set(appData.sessions.map(s=>{
+    const d=new Date(s.date); d.setDate(d.getDate()-d.getDay());
+    return d.toISOString().split('T')[0];
+  })).size;
+  document.getElementById('prog-sessions').textContent=n;
+  document.getElementById('prog-min').textContent=totalMin;
+  document.getElementById('prog-weeks').textContent=weeks;
+  document.getElementById('prog-ex').textContent=totalEx;
+
+  const logRows=document.getElementById('weight-log-rows'); logRows.innerHTML='';
+  MAIN_EXERCISES.forEach(ex=>{
+    const row=document.createElement('div'); row.className='log-row';
+    const prev=appData.weights[ex]||'';
+    row.innerHTML=`
+      <div style="flex:1;font-size:13px">${ex.split(' ').slice(0,3).join(' ')}</div>
+      <input class="log-input" type="number" id="wlog-${ex}"
+        placeholder="${prev||'kg'}" value="${prev}" step="0.5" min="0">`;
+    logRows.appendChild(row);
+  });
+
+  const hl=document.getElementById('history-list'); hl.innerHTML='';
+  if(!n){
+    hl.innerHTML='<div class="card" style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Todavía no hay sesiones registradas.</div>';
+    return;
+  }
+  appData.sessions.slice(0,10).forEach(s=>{
+    const d=document.createElement('div'); d.className='card card-sm'; d.style.marginBottom='8px';
+    const wkeys=Object.keys(s.weights||{});
+    d.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:14px;font-weight:500">${s.day}</div>
+          <div style="font-size:12px;color:var(--muted)">${s.date}${s.dur?' · '+s.dur+' min':''}</div>
+        </div>
+        <div class="badge bg-green">${s.focus?.split(' ')[0]||'✓'}</div>
+      </div>
+      ${wkeys.length?`<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${wkeys.map(k=>`<span style="font-size:11px;background:var(--surface2);padding:3px 8px;border-radius:6px;color:var(--muted)">${k.split(' ')[0]} <strong style="color:var(--text)">${s.weights[k]}kg</strong></span>`).join('')}</div>`:''}`;
+    hl.appendChild(d);
+  });
+}
+
+function saveWeights(){
+  MAIN_EXERCISES.forEach(ex=>{
+    const v=document.getElementById('wlog-'+ex)?.value;
+    if(v) appData.weights[ex]=parseFloat(v);
+  });
+  saveData(); showToast('Cargas guardadas ✓');
+}
+
+/* ════════════════════════════════════
+   UTILS
+════════════════════════════════════ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+loadData();
+renderHome();
+updateTimerUI();
+</script>
+</body>
+</html>
